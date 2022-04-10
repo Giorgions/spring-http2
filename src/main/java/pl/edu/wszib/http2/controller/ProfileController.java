@@ -5,7 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.edu.wszib.http2.service.ProfileService;
@@ -15,7 +14,6 @@ import pl.edu.wszib.http2.service.model.Profile;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Date;
 
 @Controller
 @RequestMapping("/profile")
@@ -32,31 +30,31 @@ public class ProfileController {
   @GetMapping("/get")
   public String getProfileView(@RequestParam Integer id, Model model) {
     model.addAttribute("profile", profileService.get(id));
-    return "get-profile";
+    return "profile/get-profile";
   }
 
   @GetMapping("/list")
   public String listProfilesView(Model model) throws ParseException {
     model.addAttribute("profiles", profileService.list());
-    return "list-profiles";
+    return "profile/list-profiles";
   }
 
   @GetMapping("/create")
   public String createProfileView(Model model) {
     model.addAttribute("newProfile", new Profile());
-    return "create-profile";
+    return "profile/create-profile";
   }
 
   @GetMapping("/update")
   public String updateProfileView(@RequestParam Integer id, Model model) {
     model.addAttribute("updateProfile", profileService.get(id));
-    return "update-profile";
+    return "profile/update-profile";
   }
 
   @GetMapping("/delete")
   public String deleteProfileView(@RequestParam Integer id, Model model) {
     model.addAttribute("profile", profileService.get(id));
-    return "delete-profile";
+    return "profile/delete-profile";
   }
 
   @PostMapping("/create")
@@ -68,7 +66,7 @@ public class ProfileController {
     if(bindingResult.hasErrors()) {
       model.addAttribute(newProfile);
       model.addAttribute("org.springframework.validation.BindingResult.newProfile", bindingResult);
-      return "create-profile";
+      return "profile/create-profile";
     }
 
     newProfile.setZdjecie(multipartFile.getBytes());
@@ -81,7 +79,7 @@ public class ProfileController {
     if(bindingResult.hasErrors()) {
       model.addAttribute(updateProfile);
       model.addAttribute("org.springframework.validation.BindingResult.updateProfile", bindingResult);
-      return "update-profile";
+      return "profile/update-profile";
     }
 
     if(multipartFile.getBytes().length != 0) {
@@ -89,6 +87,7 @@ public class ProfileController {
     } else {
       updateProfile.setZdjecie(profileService.get(id).getZdjecie());
     }
+
     updateProfile = profileService.update(updateProfile);
     return "redirect:/profile/get?id=" + updateProfile.getId();
   }
@@ -108,6 +107,6 @@ public class ProfileController {
 
   @ExceptionHandler(NotFoundException.class)
   public String notFoundView() {
-    return "404-profile";
+    return "profile/404-profile";
   }
 }
