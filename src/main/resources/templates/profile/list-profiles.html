@@ -10,6 +10,8 @@
 <body>
 <div class="container">
     <a class="btn btn-primary" th:href="@{/profile/create}">Stwórz</a>
+    <a class="btn btn-secondary" th:each="p : ${plcie}" th:href="@{/profile/list(plec=${p})}" th:text="'Pokaz ' + ${p}">"</a>
+    <a class="btn btn-primary" th:href="@{/profile}">Powrót</a>
     <table class="table">
         <thead>
         <tr>

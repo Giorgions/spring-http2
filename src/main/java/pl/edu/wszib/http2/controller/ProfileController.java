@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.edu.wszib.http2.service.ProfileService;
 import pl.edu.wszib.http2.service.exception.NotFoundException;
+import pl.edu.wszib.http2.service.model.Plec;
 import pl.edu.wszib.http2.service.model.Profile;
 
 import javax.validation.Valid;
@@ -34,20 +35,23 @@ public class ProfileController {
   }
 
   @GetMapping("/list")
-  public String listProfilesView(Model model) throws ParseException {
-    model.addAttribute("profiles", profileService.list());
+  public String listProfilesView(@RequestParam(required = false) Plec plec, Model model) throws ParseException {
+    model.addAttribute("profiles", profileService.list(plec));
+    model.addAttribute("plcie", Plec.values());
     return "profile/list-profiles";
   }
 
   @GetMapping("/create")
   public String createProfileView(Model model) {
     model.addAttribute("newProfile", new Profile());
+    model.addAttribute("plcie", Plec.values());
     return "profile/create-profile";
   }
 
   @GetMapping("/update")
   public String updateProfileView(@RequestParam Integer id, Model model) {
     model.addAttribute("updateProfile", profileService.get(id));
+    model.addAttribute("plcie", Plec.values());
     return "profile/update-profile";
   }
 
@@ -66,6 +70,7 @@ public class ProfileController {
     if(bindingResult.hasErrors()) {
       model.addAttribute(newProfile);
       model.addAttribute("org.springframework.validation.BindingResult.newProfile", bindingResult);
+      model.addAttribute("plcie", Plec.values());
       return "profile/create-profile";
     }
 
@@ -79,6 +84,7 @@ public class ProfileController {
     if(bindingResult.hasErrors()) {
       model.addAttribute(updateProfile);
       model.addAttribute("org.springframework.validation.BindingResult.updateProfile", bindingResult);
+      model.addAttribute("plcie", Plec.values());
       return "profile/update-profile";
     }
 
